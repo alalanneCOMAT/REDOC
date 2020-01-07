@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 import os
+import ctypes
 
 
 class PersMenu(object):
@@ -22,6 +23,13 @@ class PersMenu(object):
                             self.fullName = str(line)
                             firstLine += 1
 
+        # REUCUPERATION DE LA TAILLE DE LECRAN
+        usr32 = ctypes.windll.user32
+        largeurEcran = usr32.GetSystemMetrics(0)
+        hauteurEcran = usr32.GetSystemMetrics(1)
+
+        self.scaleFactor = float(int(largeurEcran)/1366)
+
     def show(self):
 
         # Creation du collecteur de data
@@ -35,7 +43,11 @@ class PersMenu(object):
         self.persWindow = Toplevel()
 
         self.persWindow.title(self.fullName + ' - Menu des actions')
-        self.persWindow.geometry('600x500+80+100')
+        largeur = self.scaleFactor * 600
+        hauteur = self.scaleFactor * 500
+        decalLarg = self.scaleFactor * 80
+        decalHaut = self.scaleFactor * 100
+        self.persWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.persWindow['bg'] = 'light slate gray'
 
         # Recuperation des donnees
@@ -98,7 +110,7 @@ class PersMenu(object):
         # ACTIONS ---------------------------------------------------------------------------------------------
         # --------- Creation de la fenetre
         actionFrame = LabelFrame(self.persWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
-                                 borderwidth=2, width=300, height=70, highlightthickness=5,
+                                 borderwidth=2, width=int(self.scaleFactor*300), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
         actionFrame.pack_propagate(False)
         actionFrame.pack(side=TOP, padx=2, pady=5)
@@ -110,16 +122,16 @@ class PersMenu(object):
         actualiseButton.pack(side=TOP, pady=5, padx=20)
 
         # INFORMATIONS -------------------------------------------------------------------------------------------
-        self.mainFrame = Frame(self.persWindow, bg='alice blue', width=550, height=500, highlightthickness=0, padx=5,
+        self.mainFrame = Frame(self.persWindow, bg='alice blue', width=int(self.scaleFactor*550), height=int(self.scaleFactor*500), highlightthickness=0, padx=5,
                                pady=5)
         self.mainFrame.pack(side=TOP, padx=5, pady=5)
 
-        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=550, height=400, highlightthickness=0)
+        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*550), height=int(self.scaleFactor*400), highlightthickness=0)
         self.defilY = Scrollbar(self.mainFrame, orient='vertical', command=self.canvasContainer.yview)
 
         self.mainDocPersFrame = LabelFrame(self.canvasContainer, foreground='navy', labelanchor='nw',
                                            text='Documents à traiter',
-                                           bg='alice blue', width=510, height=430, font='arial 10 bold',
+                                           bg='alice blue', width=int(self.scaleFactor*510), height=int(self.scaleFactor*430), font='arial 10 bold',
                                            borderwidth=2, highlightthickness=0, highlightbackground='alice blue',
                                            padx=5, pady=5)
         self.defilY.bind("<Configure>",
@@ -144,9 +156,9 @@ class PersMenu(object):
             elif cat == 'DIFFUSION':
                 text = 'a diffuser'
 
-            self.frameTitle.append(LabelFrame(self.mainDocPersFrame, foreground='grey20', labelanchor='nw', width=500,
+            self.frameTitle.append(LabelFrame(self.mainDocPersFrame, foreground='grey20', labelanchor='nw', width=int(self.scaleFactor*500),
                                               text=text, bd=5, bg='alice blue', font='arial 10 bold', borderwidth=1,
-                                              highlightthickness=0, highlightbackground='alice blue', height=200))
+                                              highlightthickness=0, highlightbackground='alice blue', height=int(self.scaleFactor*200)))
 
             self.frameTitle[j].pack(side=TOP, padx=5, pady=5)
 
@@ -154,13 +166,13 @@ class PersMenu(object):
             self.data[j] = []
             if not self.fullData[cat]:
                 self.labelForEmptyList = Label(self.frameTitle[j], text='Aucun document ' + text, bg='alice blue',
-                                               font='arial 8 italic', width=77, anchor=NW)
+                                               font='arial 8 italic', width=int(self.scaleFactor*77), anchor=NW)
                 self.labelForEmptyList.pack(side=TOP, padx=20, pady=0)
             else:
                 for doc in self.fullData[cat]:
                     checkValue = IntVar()
                     self.data[j].append(Checkbutton(self.frameTitle[j], text=doc, variable=checkValue, onvalue=1,
-                                                    offvalue=0, bg='alice blue', width=63, font='arial 9', anchor=NW))
+                                                    offvalue=0, bg='alice blue', width=int(self.scaleFactor*63), font='arial 9', anchor=NW))
 
                     self.data[j][i].var = checkValue
                     self.data[j][i].pack(side=TOP, padx=20, pady=0)
@@ -246,7 +258,11 @@ class PersMenu(object):
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
         self.popup = Toplevel()
         self.popup.title(self.fullName + ' - Modifications')
-        self.popup.geometry('300x120+450+300')
+        largeur = self.scaleFactor * 300
+        hauteur = self.scaleFactor * 120
+        decalLarg = self.scaleFactor * 450
+        decalHaut = self.scaleFactor * 300
+        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.popup['bg'] = 'alice blue'
 
         if trigger0 == 0:
@@ -255,16 +271,16 @@ class PersMenu(object):
             text = 'Modifications bien prises en compte'
 
         msg = Message(self.popup, text=text, anchor=CENTER, bg='alice blue',
-                      width=250,
+                      width=int(self.scaleFactor*250),
                       font='arial 9 bold')
         msg.pack(side=TOP, pady=5)
-        msg2 = Message(self.popup, anchor=CENTER, bg='alice blue', width=250, font='arial 9',
+        msg2 = Message(self.popup, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9',
                        text='La fenetre liée au menu va se fermer \nMerci d actualiser la fenetre principale')
         msg2.pack(side=TOP, pady=0)
 
         self.windowList = [self.popup, self.persWindow]
 
-        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=20,
+        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
                      font='arial 10 bold', foreground='black', bg='grey60')
         but.pack(side=TOP, pady=5)
 

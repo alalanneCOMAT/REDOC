@@ -2,10 +2,19 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
+import ctypes
 
 
 class DocMenu(object):
     def __init__(self, dico=None):
+        # REUCUPERATION DE LA TAILLE DE LECRAN
+        usr32 = ctypes.windll.user32
+        largeurEcran = usr32.GetSystemMetrics(0)
+        hauteurEcran = usr32.GetSystemMetrics(1)
+
+        self.scaleFactor = float(int(largeurEcran)/1366)
+
+        # RECUPERATION DU DICTIONNAIRE PRINCIPAL
         self.d = dico
         '''
         dico = {'docTitle': docTitle,
@@ -49,13 +58,17 @@ class DocMenu(object):
         self.docWindow = Toplevel()
 
         self.docWindow.title(self.d['docTitle'])
-        self.docWindow.geometry('980x260+80+210')
+        largeur = self.scaleFactor * 980
+        hauteur = self.scaleFactor * 260
+        decalLarg = self.scaleFactor * 80
+        decalHaut = self.scaleFactor * 210
+        self.docWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.docWindow['bg'] = 'light slate gray'
 
         # ACTIONS ---------------------------------------------------------------------------------------------
         # --------- Creation de la fenetre
         actionFrame = LabelFrame(self.docWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
-                                 borderwidth=2, width=300, height=70, highlightthickness=5,
+                                 borderwidth=2, width=int(self.scaleFactor*300), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
         actionFrame.pack_propagate(False)
         actionFrame.pack(side=TOP, padx=2, pady=5)
@@ -69,7 +82,7 @@ class DocMenu(object):
         # AFFICHAGE DE LA NC
         # placement fenetre NC
         docFrame = LabelFrame(self.docWindow, text=self.d["docTitle"], labelanchor='nw', bd=5, bg='alice blue',
-                              borderwidth=2, width=950, height=400, highlightthickness=5,
+                              borderwidth=2, width=int(self.scaleFactor*950), height=int(self.scaleFactor*400), highlightthickness=5,
                               highlightbackground='alice blue', font='arial 10 bold', foreground='navy')
         docFrame.pack_propagate(False)
         docFrame.pack(side=TOP, padx=2, pady=10)
@@ -78,7 +91,7 @@ class DocMenu(object):
         if self.d["curState"] == 5:
             # --------- Creation de la fenetre
             stateFrame = LabelFrame(docFrame, text='Statut en cours :', labelanchor='nw', bd=5, bg='alice blue',
-                                    borderwidth=2, width=400, height=100, highlightthickness=2,
+                                    borderwidth=2, width=int(self.scaleFactor*400), height=int(self.scaleFactor*100), highlightthickness=2,
                                     highlightbackground='alice blue', font='arial 8 italic', relief=FLAT)
             stateFrame.pack_propagate(False)
             stateFrame.pack(side=LEFT, pady=5, padx=10)
@@ -97,7 +110,7 @@ class DocMenu(object):
         else:
             # --------- Creation de la fenetre
             stateFrame = LabelFrame(docFrame, text='Statut en cours :', labelanchor='nw', bd=5, bg='alice blue',
-                                    borderwidth=2, width=150, height=50, highlightthickness=2,
+                                    borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*50), highlightthickness=2,
                                     highlightbackground='alice blue', font='arial 8 italic', relief=FLAT)
             stateFrame.pack_propagate(False)
             stateFrame.pack(side=LEFT, pady=5, padx=10)
@@ -109,13 +122,13 @@ class DocMenu(object):
         if self.d["curState"] != 5:
             # Personne associees :
             # --------- Creation de la fenetre
-            frameContainer = Frame(docFrame, bg='alice blue', width=150, height=50)
-            canvasContainer = Canvas(frameContainer, bg='alice blue', width=150, height=200, highlightthickness=0)
+            frameContainer = Frame(docFrame, bg='alice blue', width=int(self.scaleFactor*150), height=int(self.scaleFactor*50))
+            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.scaleFactor*150), height=int(self.scaleFactor*200), highlightthickness=0)
             defilY = Scrollbar(frameContainer, orient='vertical', command=canvasContainer.yview)
 
             peopleText = 'Personnes concernees'
             peopleFrame = LabelFrame(frameContainer, text=peopleText, labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=150, height=200, highlightthickness=2,
+                                     borderwidth=1, width=int(self.scaleFactor*150), height=int(self.scaleFactor*200), highlightthickness=2,
                                      highlightbackground='alice blue', font='arial 8 italic', relief=GROOVE)
 
             defilY.bind("<Configure>", lambda e: canvasContainer.configure(scrollregion=canvasContainer.bbox("all")))
@@ -152,12 +165,12 @@ class DocMenu(object):
             # --------- Creation de la fenetre
             if self.d["curState"] == 4:
                 stateToComeFrame = LabelFrame(docFrame, text='Date de diffusion :', labelanchor='nw', bd=5, bg='alice blue',
-                                              borderwidth=2, width=150, height=100, highlightthickness=2,
+                                              borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*100), highlightthickness=2,
                                               highlightbackground='alice blue', font='arial 8 italic', relief=FLAT)
 
             else:
                 stateToComeFrame = LabelFrame(docFrame, text='Changer de statut :', labelanchor='nw', bd=5, bg='alice blue',
-                                              borderwidth=2, width=150, height=50, highlightthickness=2,
+                                              borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*50), highlightthickness=2,
                                               highlightbackground='alice blue', font='arial 8 italic', relief=FLAT)
             stateToComeFrame.pack_propagate(False)
             stateToComeFrame.pack(side=LEFT, pady=5, padx=10)
@@ -190,7 +203,7 @@ class DocMenu(object):
         # Espace commentaire
         # --------- Creation de la fenetre
         CommentaryFrame = LabelFrame(docFrame, text='Commentaires', labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=500, height=110, highlightthickness=2,
+                                     borderwidth=1, width=int(self.scaleFactor*500), height=int(self.scaleFactor*110), highlightthickness=2,
                                      highlightbackground='alice blue', font='arial 8 italic', relief=GROOVE)
         CommentaryFrame.pack_propagate(False)
         CommentaryFrame.pack(side=LEFT, pady=5, padx=10)
@@ -432,20 +445,24 @@ class DocMenu(object):
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
         self.popup = Toplevel()
         self.popup.title('Changement de statut')
-        self.popup.geometry('300x120+450+300')
+        largeur = self.scaleFactor * 300
+        hauteur = self.scaleFactor * 120
+        decalLarg = self.scaleFactor * 450
+        decalHaut = self.scaleFactor * 300
+        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.popup['bg'] = 'alice blue'
 
         msg = Message(self.popup, text='Changement de statut bien pris en compte', anchor=CENTER, bg ='alice blue',
-                      width=250, font='arial 9 bold')
+                      width=int(self.scaleFactor*250), font='arial 9 bold')
         msg.pack(side=TOP, pady=5)
         msg2 = Message(self.popup,
                        text='La fenetre liée au menu va se fermée \nMerci d actualiser la fenetre principale',
-                       anchor=CENTER, bg ='alice blue', width=250, font='arial 9')
+                       anchor=CENTER, bg ='alice blue', width=int(self.scaleFactor*250), font='arial 9')
         msg2.pack(side=TOP, pady=0)
 
         self.windowList = [self.popup, self.docWindow]
 
-        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=20,
+        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
                      font='arial 10 bold', foreground='black', bg='grey60')
         but.pack(side=TOP, pady=5)
 

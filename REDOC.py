@@ -4,6 +4,7 @@ import shutil
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
+import ctypes
 
 # IMPORT PERSO
 from DocMenu import DocMenu
@@ -18,6 +19,13 @@ from PersMenu import PersMenu
 class MainWindow(object):
 
     def __init__(self):
+
+        # REUCUPERATION DE LA TAILLE DE LECRAN
+        usr32 = ctypes.windll.user32
+        largeurEcran = usr32.GetSystemMetrics(0)
+        hauteurEcran = usr32.GetSystemMetrics(1)
+
+        self.scaleFactor = float(int(largeurEcran)/1366)
 
         # CREATION DE LA FENETRE PRINCIPALE --------------------------------------------------------------------------
         self.mainWindow = Tk()
@@ -37,24 +45,32 @@ class MainWindow(object):
         if indicOuverture == 1:
             print('MainWindow.AccessOFF')
 
-            self.mainWindow.geometry('200x200+10+10')
+            largeur = self.scaleFactor*100
+            hauteur = self.scaleFactor*100
+            decalLarg = self.scaleFactor*10
+            decalHaut = self.scaleFactor*10
+            self.mainWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
 
             self.popup = Toplevel()
             self.popup.title('ACCES IMPOSSIBLE')
-            self.popup.geometry('300x120+450+300')
+            largeur = self.scaleFactor*300
+            hauteur = self.scaleFactor*120
+            decalLarg = self.scaleFactor * 400
+            decalHaut = self.scaleFactor * 250
+            self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
             self.popup['bg'] = 'alice blue'
 
             msgText = 'REDOC deja en cours d utilisation'
             msg2text = 'La fenetre va se fermer \nAppuyer sur OK'
 
-            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=250, font='arial 9 bold')
+            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9 bold')
             msg.pack(side=TOP, pady=5)
-            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=250, font='arial 9')
+            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9')
             msg2.pack(side=TOP, pady=0)
 
             self.windowList = [self.popup, self.mainWindow]
 
-            but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=20,
+            but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
                          font='arial 10 bold', foreground='black', bg='grey60')
             but.pack(side=TOP, pady=5)
 
@@ -70,14 +86,18 @@ class MainWindow(object):
             fileToCreate.close()
             # -----------------------------------------------------------------------------------
 
-            self.mainWindow.geometry('1100x650+10+10')
+            largeur = self.scaleFactor*1100
+            hauteur = self.scaleFactor*650
+            decalLarg = self.scaleFactor*10
+            decalHaut = self.scaleFactor*10
+            self.mainWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
 
             print("MainWindow.__init__")
 
             # ACTIONS PERMANENTES -------------------------------------------------------------------------------------
             # Creation de la fenetre
             actionFrame = LabelFrame(self.mainWindow, text='Action permanente', labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=2, width=150, height=635, highlightthickness=5,
+                                     borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*635), highlightthickness=5,
                                      highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
             actionFrame.pack_propagate(False)
             actionFrame.pack(side=LEFT, padx=5, pady=5)
@@ -89,13 +109,13 @@ class MainWindow(object):
 
             # BLOC DE RESPONSABILITE
             # --------- Creation de la fenetre
-            frameContainer = Frame(actionFrame, bg='alice blue', width=150, height=100)
-            canvasContainer = Canvas(frameContainer, bg='alice blue', width=100, height=110, highlightthickness=0)
+            frameContainer = Frame(actionFrame, bg='alice blue', width=int(self.scaleFactor*150), height=int(self.scaleFactor*100))
+            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.scaleFactor*100), height=int(self.scaleFactor*110), highlightthickness=0)
             defilY = Scrollbar(frameContainer, orient='vertical', command=canvasContainer.yview)
 
             peopleText = 'Responsabilite'
             peopleFrame = LabelFrame(frameContainer, text=peopleText, labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=80, height=50, highlightthickness=2,
+                                     borderwidth=1, width=int(self.scaleFactor*80), height=int(self.scaleFactor*50), highlightthickness=2,
                                      highlightbackground='alice blue', font='arial 7', relief=GROOVE)
 
             defilY.bind("<Configure>", lambda e: canvasContainer.configure(scrollregion=canvasContainer.bbox("all")))
@@ -149,7 +169,7 @@ class MainWindow(object):
 
         # Titres des colonnes
         # ---------- frame en-tete tableau
-        self.enTeteFrame = Frame(self.tableFrame, bd=1, bg='light slate gray', width=880, height=30,
+        self.enTeteFrame = Frame(self.tableFrame, bd=1, bg='light slate gray', width=int(self.scaleFactor*880), height=int(self.scaleFactor*30),
                                  highlightthickness=1, highlightbackground='navy')
         self.enTeteFrame.pack_propagate(False)
         self.enTeteFrame.pack(side=TOP, padx=0, pady=0)
@@ -162,7 +182,7 @@ class MainWindow(object):
                         {"name": "Diffusion", "w": 100}]
 
         for d in entete_confs:
-            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=d["w"], height=20,
+            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=d["w"], height=int(self.scaleFactor*20),
                                highlightthickness=0, highlightbackground='navy')
             titreFrame.pack_propagate(False)
             titreFrame.pack(side=LEFT, padx=0, pady=0)
@@ -191,10 +211,10 @@ class MainWindow(object):
         j = 0
         for i in range(0, len(self.docListFil)):
             docTitle = self.docListFil[i].split('.')[0]
-    
+
             # CHARGEMENT DES PARAMETRES VARIABLES
             fileToAnalyse = "DocList" + '\\' + self.docListFil[i]
-    
+
             activateRedac = 0
             listRedac = {}
             activateRelec = 0
@@ -203,7 +223,7 @@ class MainWindow(object):
             listSign = {}
             activateDiff = 0
             listDiff = {}
-    
+
             # RECUPERATION DE TOUTE LES DATAS UTILES ANS LES .TXT
             with open(fileToAnalyse, 'r') as readFile:
                 for line in readFile:
@@ -275,12 +295,12 @@ class MainWindow(object):
             if trigerActiveResp == 1:
                 # PLACEMENT DE LA NC DANS LE TABLEAU
                 # Creation de la fenetre
-                docMainWindow = Frame(self.tableFrame, bd=1, bg='alice blue', width=880, height=30, highlightthickness=1,
+                docMainWindow = Frame(self.tableFrame, bd=1, bg='alice blue', width=int(self.scaleFactor*880), height=int(self.scaleFactor*30), highlightthickness=1,
                                       highlightbackground='navy')
                 docMainWindow.pack_propagate(False)
                 docMainWindow.pack(side=TOP, padx=0, pady=0)
                 # ------------- Bouton du titre
-                titleButton = Button(docMainWindow, text=docTitle, width=57, height=30, state=NORMAL,
+                titleButton = Button(docMainWindow, text=docTitle, width=int(self.scaleFactor*57), height=int(self.scaleFactor*30), state=NORMAL,
                                      font='arial 9 bold', foreground='gray10', anchor=W)
                 o = DocMenu(dico)
                 self.sub_windows.append(o)
@@ -288,14 +308,14 @@ class MainWindow(object):
                 titleButton.pack_propagate(False)
                 titleButton.pack(side=LEFT, pady=0, padx=0)
                 # ------------- Revision
-                revFrame = Frame(docMainWindow, bd=1, bg='alice blue', width=55, height=20, highlightthickness=0,
+                revFrame = Frame(docMainWindow, bd=1, bg='alice blue', width=int(self.scaleFactor*55), height=int(self.scaleFactor*20), highlightthickness=0,
                                  highlightbackground='navy')
                 revFrame.pack_propagate(False)
                 revFrame.pack(side=LEFT, padx=0, pady=0)
                 revLabel = Label(revFrame, text=curVer, foreground='gray10', bg='alice blue', font='arial 9 bold')
                 revLabel.pack()
                 # ------------ Redaction
-                redacFrame = Frame(docMainWindow, bd=1, width=96, height=20, highlightthickness=0)
+                redacFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
                 if curState <= 1:
                     redacFrame.config(bg='red3')
                 else:
@@ -303,7 +323,7 @@ class MainWindow(object):
                 redacFrame.pack_propagate(False)
                 redacFrame.pack(side=LEFT, padx=2, pady=0)
                 # ------------ Relecture
-                relecFrame = Frame(docMainWindow, bd=1, width=96, height=20, highlightthickness=0)
+                relecFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
                 if curState <= 2:
                     relecFrame.config(bg='red3')
                 else:
@@ -311,7 +331,7 @@ class MainWindow(object):
                 relecFrame.pack_propagate(False)
                 relecFrame.pack(side=LEFT, padx=2, pady=0)
                 # ------------ Signature
-                signFrame = Frame(docMainWindow, bd=1, width=96, height=20, highlightthickness=0)
+                signFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
                 if curState <= 3:
                     signFrame.config(bg='red3')
                 else:
@@ -319,7 +339,7 @@ class MainWindow(object):
                 signFrame.pack_propagate(False)
                 signFrame.pack(side=LEFT, padx=2, pady=0)
                 # ------------ diffusion
-                diffFrame = Frame(docMainWindow, bd=1, width=96, height=20, highlightthickness=0)
+                diffFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
                 if curState <= 4:
                     diffFrame.config(bg='red3')
                 else:
@@ -332,11 +352,11 @@ class MainWindow(object):
 
         # CREATION DE LA FENETRE CONTENANT DU CANVAS DU TABLEAU RESUME ET DE LA SCROLL BAR ASSOCIEE
 
-        self.mainFrame = Frame(self.mainWindow, bg='alice blue', width=930, height=630)
-        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=900, height=630)
+        self.mainFrame = Frame(self.mainWindow, bg='alice blue', width=int(self.scaleFactor*930), height=int(self.scaleFactor*630))
+        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*900), height=int(self.scaleFactor*630))
         self.defilY = Scrollbar(self.mainFrame, orient='vertical', command=self.canvasContainer.yview)
         self.tableFrame = LabelFrame(self.canvasContainer, text='Tableau Resume', labelanchor='nw', bd=5,
-                                     bg='alice blue', borderwidth=2, width=900, height=630, highlightthickness=5,
+                                     bg='alice blue', borderwidth=2, width=int(self.scaleFactor*900), height=int(self.scaleFactor*630), highlightthickness=5,
                                      highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
 
         self.defilY.bind("<Configure>",

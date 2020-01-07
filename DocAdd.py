@@ -2,12 +2,18 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 import os
+import ctypes
 
 
 class DocAdd(object):
 
     def __init__(self):
-        tbc = 0
+        # REUCUPERATION DE LA TAILLE DE LECRAN
+        usr32 = ctypes.windll.user32
+        largeurEcran = usr32.GetSystemMetrics(0)
+        hauteurEcran = usr32.GetSystemMetrics(1)
+
+        self.scaleFactor = float(int(largeurEcran) / 1366)
 
     def show(self):
         print('DocAdd.show')
@@ -15,13 +21,17 @@ class DocAdd(object):
         self.docAddWindow = Toplevel()
 
         self.docAddWindow.title('Ajout de document')
-        self.docAddWindow.geometry('500x500+80+100')
+        largeur = self.scaleFactor * 500
+        hauteur = self.scaleFactor * 500
+        decalLarg = self.scaleFactor * 80
+        decalHaut = self.scaleFactor * 100
+        self.docAddWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.docAddWindow['bg'] = 'light slate gray'
 
         # ACTIONS ---------------------------------------------------------------------------------------------
         # --------- Creation de la fenetre
         actionFrame = LabelFrame(self.docAddWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
-                                 borderwidth=2, width=250, height=70, highlightthickness=5,
+                                 borderwidth=2, width=int(self.scaleFactor*250), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
         actionFrame.pack_propagate(False)
         actionFrame.pack(side=TOP, padx=5, pady=5)
@@ -32,9 +42,9 @@ class DocAdd(object):
         actualiseButton.pack(side=TOP, pady=5, padx=20)
 
         # FENETRE PRINCIPALE
-        self.mainFrame = Frame(self.docAddWindow, bg='alice blue', width=450, height=500, highlightthickness=0)
+        self.mainFrame = Frame(self.docAddWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*500), highlightthickness=0)
         self.docInfoFrame = LabelFrame(self.mainFrame, text='Informations pour la création du document',
-                                       labelanchor='nw', bd=5, bg='alice blue', borderwidth=2, width=450, height=400,
+                                       labelanchor='nw', bd=5, bg='alice blue', borderwidth=2, width=int(self.scaleFactor*450), height=int(self.scaleFactor*400),
                                        highlightthickness=0, highlightbackground='alice blue', foreground='navy',
                                        font='arial 9 italic bold')
         self.mainFrame.pack(side=TOP, pady=10)
@@ -42,7 +52,7 @@ class DocAdd(object):
 
         # Fenetre de titre :
         self.docTitleFrame = LabelFrame(self.docInfoFrame, text='Titre du document et revision', labelanchor='nw', bd=5,
-                                        bg='alice blue', borderwidth=2, width=430, height=50, highlightthickness=0,
+                                        bg='alice blue', borderwidth=2, width=int(self.scaleFactor*430), height=int(self.scaleFactor*50), highlightthickness=0,
                                         highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
 
         self.docTitleFrame.pack_propagate(False)
@@ -51,7 +61,7 @@ class DocAdd(object):
         # TITRE
         value = StringVar()
         self.docTitleEntry = Entry(self.docTitleFrame, textvariable=value, font='arial 8',
-                                   highlightthickness=0, width=55)
+                                   highlightthickness=0, width=int(self.scaleFactor*55))
         self.docTitleEntry.var = value
         self.docTitleEntry.insert(0, 'titre')
         self.docTitleEntry.pack(side=LEFT, padx=2, pady=2)
@@ -59,18 +69,18 @@ class DocAdd(object):
         # REV
         value = StringVar()
         self.docRevEntry = Entry(self.docTitleFrame, textvariable=value, font='arial 8',
-                                 highlightthickness=0, width=10)
+                                 highlightthickness=0, width=int(self.scaleFactor*10))
         self.docRevEntry.var = value
         self.docRevEntry.insert(0, 'rev')
         self.docRevEntry.pack(side=RIGHT, padx=2, pady=2)
 
         # Fenetre Personne
-        self.canvasContainer = Canvas(self.docInfoFrame, bg='alice blue', width=450, height=400, highlightthickness=0)
+        self.canvasContainer = Canvas(self.docInfoFrame, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400), highlightthickness=0)
         self.defilY = Scrollbar(self.docInfoFrame, orient='vertical', command=self.canvasContainer.yview)
 
         self.mainDocPersFrame = LabelFrame(self.canvasContainer, foreground='navy', labelanchor='nw',
                                            text='Personnes concernées - cocher chacune des categories',
-                                           bg='alice blue',  width=430, height=430, font='arial 9 italic',
+                                           bg='alice blue',  width=int(self.scaleFactor*430), height=int(self.scaleFactor*430), font='arial 9 italic',
                                            borderwidth=2, highlightthickness=0, highlightbackground='alice blue')
         self.defilY.bind("<Configure>",
                          lambda e: self.canvasContainer.configure(scrollregion=self.canvasContainer.bbox("all")))
@@ -105,7 +115,7 @@ class DocAdd(object):
             for pers in self.persListFil:
                 checkValue = IntVar()
                 self.doc[j].append(Checkbutton(self.frameTitle[j], text=pers, variable=checkValue, onvalue=1,
-                                            offvalue=0, bg='alice blue', font='arial 9', width=20, anchor=W))
+                                            offvalue=0, bg='alice blue', font='arial 9', width=int(self.scaleFactor*20), anchor=W))
 
                 self.doc[j][i].var = checkValue
                 self.doc[j][i].pack(side=TOP, padx=20, pady=0)
@@ -170,19 +180,23 @@ class DocAdd(object):
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
         self.popup = Toplevel()
         self.popup.title('Ajout terminee')
-        self.popup.geometry('300x120+450+300')
+        largeur = self.scaleFactor * 300
+        hauteur = self.scaleFactor * 120
+        decalLarg = self.scaleFactor * 450
+        decalHaut = self.scaleFactor * 300
+        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.popup['bg'] = 'alice blue'
 
-        msg = Message(self.popup, text='Nouveau document bien ajoute', anchor=CENTER, bg='alice blue', width=250,
+        msg = Message(self.popup, text='Nouveau document bien ajoute', anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
                       font='arial 9 bold')
         msg.pack(side=TOP, pady=5)
-        msg2 = Message(self.popup, anchor=CENTER, bg='alice blue', width=250, font='arial 9',
+        msg2 = Message(self.popup, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9',
                        text='La fenetre liée au menu va se fermée \nMerci d actualiser la fenetre principale')
         msg2.pack(side=TOP, pady=0)
 
         self.windowList = [self.popup, self.docAddWindow]
 
-        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=20,
+        but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
                      font='arial 10 bold', foreground='black', bg='grey60')
         but.pack(side=TOP, pady=5)
 
