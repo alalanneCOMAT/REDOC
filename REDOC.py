@@ -63,15 +63,17 @@ class MainWindow(object):
             msgText = 'REDOC deja en cours d utilisation'
             msg2text = 'La fenetre va se fermer \nAppuyer sur OK'
 
-            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9 bold')
+            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
+                          font='arial 9 bold')
             msg.pack(side=TOP, pady=5)
-            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9')
+            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
+                           font='arial 9')
             msg2.pack(side=TOP, pady=0)
 
             self.windowList = [self.popup, self.mainWindow]
 
-            but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
-                         font='arial 10 bold', foreground='black', bg='grey60')
+            but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL,
+                         width=int(self.scaleFactor*20), font='arial 10 bold', foreground='black', bg='grey60')
             but.pack(side=TOP, pady=5)
 
         else:
@@ -97,8 +99,9 @@ class MainWindow(object):
             # ACTIONS PERMANENTES -------------------------------------------------------------------------------------
             # Creation de la fenetre
             actionFrame = LabelFrame(self.mainWindow, text='Action permanente', labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*635), highlightthickness=5,
-                                     highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
+                                     borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*635),
+                                     highlightthickness=5, highlightbackground='alice blue', font='arial 9 italic',
+                                     foreground='navy')
             actionFrame.pack_propagate(False)
             actionFrame.pack(side=LEFT, padx=5, pady=5)
 
@@ -109,14 +112,17 @@ class MainWindow(object):
 
             # BLOC DE RESPONSABILITE
             # --------- Creation de la fenetre
-            frameContainer = Frame(actionFrame, bg='alice blue', width=int(self.scaleFactor*150), height=int(self.scaleFactor*100))
-            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.scaleFactor*100), height=int(self.scaleFactor*110), highlightthickness=0)
+            frameContainer = Frame(actionFrame, bg='alice blue', width=int(self.scaleFactor*150),
+                                   height=int(self.scaleFactor*100))
+            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.scaleFactor*100),
+                                     height=int(self.scaleFactor*110), highlightthickness=0)
             defilY = Scrollbar(frameContainer, orient='vertical', command=canvasContainer.yview)
 
             peopleText = 'Responsabilite'
             peopleFrame = LabelFrame(frameContainer, text=peopleText, labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=int(self.scaleFactor*80), height=int(self.scaleFactor*50), highlightthickness=2,
-                                     highlightbackground='alice blue', font='arial 7', relief=GROOVE)
+                                     borderwidth=1, width=int(self.scaleFactor*80), height=int(self.scaleFactor*50),
+                                     highlightthickness=2, highlightbackground='alice blue', font='arial 7',
+                                     relief=GROOVE)
 
             defilY.bind("<Configure>", lambda e: canvasContainer.configure(scrollregion=canvasContainer.bbox("all")))
             canvasContainer.configure(yscrollcommand=defilY.set)
@@ -169,8 +175,8 @@ class MainWindow(object):
 
         # Titres des colonnes
         # ---------- frame en-tete tableau
-        self.enTeteFrame = Frame(self.tableFrame, bd=1, bg='light slate gray', width=int(self.scaleFactor*880), height=int(self.scaleFactor*30),
-                                 highlightthickness=1, highlightbackground='navy')
+        self.enTeteFrame = Frame(self.tableFrame, bd=1, bg='light slate gray', width=int(self.scaleFactor*880),
+                                 height=int(self.scaleFactor*30), highlightthickness=1, highlightbackground='navy')
         self.enTeteFrame.pack_propagate(False)
         self.enTeteFrame.pack(side=TOP, padx=0, pady=0)
         # ---------- en-têtes
@@ -182,8 +188,8 @@ class MainWindow(object):
                         {"name": "Diffusion", "w": 100}]
 
         for d in entete_confs:
-            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=d["w"], height=int(self.scaleFactor*20),
-                               highlightthickness=0, highlightbackground='navy')
+            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=d["w"],
+                               height=int(self.scaleFactor*20), highlightthickness=0, highlightbackground='navy')
             titreFrame.pack_propagate(False)
             titreFrame.pack(side=LEFT, padx=0, pady=0)
             titreLabel = Label(titreFrame, text=d["name"], foreground='navy', bg='light slate gray',
@@ -232,7 +238,9 @@ class MainWindow(object):
                     elif line.startswith('VERSIONENCOURS'):
                         curVer = line.split(' ')[1].replace('\n', '')
                     elif line.startswith('DATEDEDIFFUSIONREVPREC'):
-                        oldDate = line.split(' ')[1].replace('\n', '')
+                        oldDate = line.split(' ')
+                        del oldDate[0]
+                        oldDate[-1] = oldDate[-1].replace('\n', '')
                     elif line.startswith('COMMENTAIRE1'):
                         commentaire1 = line.replace('COMMENTAIRE1 ', '').replace('\n', '')
                     elif line.startswith('COMMENTAIRE2'):
@@ -295,68 +303,111 @@ class MainWindow(object):
             if trigerActiveResp == 1:
                 # PLACEMENT DE LA NC DANS LE TABLEAU
                 # Creation de la fenetre
-                docMainWindow = Frame(self.tableFrame, bd=1, bg='alice blue', width=int(self.scaleFactor*880), height=int(self.scaleFactor*30), highlightthickness=1,
-                                      highlightbackground='navy')
+                docMainWindow = Frame(self.tableFrame, bd=1, bg='alice blue', width=int(self.scaleFactor*880),
+                                      height=int(self.scaleFactor*30), highlightthickness=1, highlightbackground='navy')
                 docMainWindow.pack_propagate(False)
                 docMainWindow.pack(side=TOP, padx=0, pady=0)
                 # ------------- Bouton du titre
-                titleButton = Button(docMainWindow, text=docTitle, width=int(self.scaleFactor*57), height=int(self.scaleFactor*30), state=NORMAL,
-                                     font='arial 9 bold', foreground='gray10', anchor=W)
+                titleButton = Button(docMainWindow, text=docTitle, width=int(self.scaleFactor*57),
+                                     height=int(self.scaleFactor*30), state=NORMAL, font='arial 9 bold',
+                                     foreground='gray10', anchor=W)
                 o = DocMenu(dico)
                 self.sub_windows.append(o)
                 titleButton.config(command=self.sub_windows[j].show)
                 titleButton.pack_propagate(False)
                 titleButton.pack(side=LEFT, pady=0, padx=0)
                 # ------------- Revision
-                revFrame = Frame(docMainWindow, bd=1, bg='alice blue', width=int(self.scaleFactor*55), height=int(self.scaleFactor*20), highlightthickness=0,
-                                 highlightbackground='navy')
+                revFrame = Frame(docMainWindow, bd=1, bg='alice blue', width=int(self.scaleFactor*55),
+                                 height=int(self.scaleFactor*20), highlightthickness=0, highlightbackground='navy')
                 revFrame.pack_propagate(False)
                 revFrame.pack(side=LEFT, padx=0, pady=0)
                 revLabel = Label(revFrame, text=curVer, foreground='gray10', bg='alice blue', font='arial 9 bold')
                 revLabel.pack()
+
                 # ------------ Redaction
-                redacFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
-                if curState <= 1:
+                redacFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                                   highlightthickness=0)
+                # ------------ Relecture
+                relecFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                                   highlightthickness=0)
+                # ------------ Signature
+                signFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                                  highlightthickness=0)
+                # ------------ diffusion
+                diffFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                                  highlightthickness=0)
+
+                # Acquisition de la date de la date de chgt de statut
+
+                if curState == 1:
                     redacFrame.config(bg='red3')
+                    relecFrame.config(bg='red3')
+                    signFrame.config(bg='red3')
+                    diffFrame.config(bg='red3')
+                elif curState == 2:
+                    redacFrame.config(bg='lawn green')
+                    relecFrame.config(bg='red3')
+                    signFrame.config(bg='red3')
+                    diffFrame.config(bg='red3')
+                    dateLabelRedac = Label(redacFrame, text=dico['oldDate'][0], font='arial 8', bg='lawn green')
+                    dateLabelRedac.pack(side=TOP)
+                elif curState == 3:
+                    redacFrame.config(bg='lawn green')
+                    relecFrame.config(bg='lawn green')
+                    signFrame.config(bg='red3')
+                    diffFrame.config(bg='red3')
+                    dateLabelRedac = Label(redacFrame, text=dico['oldDate'][0], font='arial 8', bg='lawn green')
+                    dateLabelRedac.pack(side=TOP)
+                    dateLabelRelec = Label(relecFrame, text=dico['oldDate'][1], font='arial 8', bg='lawn green')
+                    dateLabelRelec.pack(side=TOP)
+                elif curState == 4:
+                    redacFrame.config(bg='lawn green')
+                    relecFrame.config(bg='lawn green')
+                    signFrame.config(bg='lawn green')
+                    diffFrame.config(bg='red3')
+                    dateLabelRedac = Label(redacFrame, text=dico['oldDate'][0], font='arial 8', bg='lawn green')
+                    dateLabelRedac.pack(side=TOP)
+                    dateLabelRelec = Label(relecFrame, text=dico['oldDate'][1], font='arial 8', bg='lawn green')
+                    dateLabelRelec.pack(side=TOP)
+                    dateLabelSign = Label(signFrame, text=dico['oldDate'][2], font='arial 8', bg='lawn green')
+                    dateLabelSign.pack(side=TOP)
                 else:
                     redacFrame.config(bg='lawn green')
+                    relecFrame.config(bg='lawn green')
+                    signFrame.config(bg='lawn green')
+                    diffFrame.config(bg='lawn green')
+                    dateLabelRedac = Label(redacFrame, text=dico['oldDate'][0], font='arial 8', bg='lawn green')
+                    dateLabelRedac.pack(side=TOP)
+                    dateLabelRelec = Label(relecFrame, text=dico['oldDate'][1], font='arial 8', bg='lawn green')
+                    dateLabelRelec.pack(side=TOP)
+                    dateLabelSign = Label(signFrame, text=dico['oldDate'][2], font='arial 8', bg='lawn green')
+                    dateLabelSign.pack(side=TOP)
+                    dateLabelDiff = Label(diffFrame, text=dico['oldDate'][3], font='arial 8', bg='lawn green')
+                    dateLabelDiff.pack(side=TOP)
+
                 redacFrame.pack_propagate(False)
                 redacFrame.pack(side=LEFT, padx=2, pady=0)
-                # ------------ Relecture
-                relecFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
-                if curState <= 2:
-                    relecFrame.config(bg='red3')
-                else:
-                    relecFrame.config(bg='lawn green')
                 relecFrame.pack_propagate(False)
                 relecFrame.pack(side=LEFT, padx=2, pady=0)
-                # ------------ Signature
-                signFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
-                if curState <= 3:
-                    signFrame.config(bg='red3')
-                else:
-                    signFrame.config(bg='lawn green')
                 signFrame.pack_propagate(False)
                 signFrame.pack(side=LEFT, padx=2, pady=0)
-                # ------------ diffusion
-                diffFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20), highlightthickness=0)
-                if curState <= 4:
-                    diffFrame.config(bg='red3')
-                else:
-                    diffFrame.config(bg='lawn green')
                 diffFrame.pack_propagate(False)
                 diffFrame.pack(side=LEFT, padx=2, pady=0)
+
                 j += 1
 
     def defineMainFrame(self):
 
         # CREATION DE LA FENETRE CONTENANT DU CANVAS DU TABLEAU RESUME ET DE LA SCROLL BAR ASSOCIEE
 
-        self.mainFrame = Frame(self.mainWindow, bg='alice blue', width=int(self.scaleFactor*930), height=int(self.scaleFactor*630))
-        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*900), height=int(self.scaleFactor*630))
+        self.mainFrame = Frame(self.mainWindow, bg='alice blue', width=int(self.scaleFactor*930),
+                               height=int(self.scaleFactor*630))
+        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*900),
+                                      height=int(self.scaleFactor*630))
         self.defilY = Scrollbar(self.mainFrame, orient='vertical', command=self.canvasContainer.yview)
         self.tableFrame = LabelFrame(self.canvasContainer, text='Tableau Resume', labelanchor='nw', bd=5,
-                                     bg='alice blue', borderwidth=2, width=int(self.scaleFactor*900), height=int(self.scaleFactor*630), highlightthickness=5,
+                                     bg='alice blue', borderwidth=2, width=int(self.scaleFactor*900),
+                                     height=int(self.scaleFactor*630), highlightthickness=5,
                                      highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
 
         self.defilY.bind("<Configure>",

@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 import ctypes
+import datetime
 
 
 class DocMenu(object):
@@ -46,7 +47,7 @@ class DocMenu(object):
             self.PersListToTake = self.d["listDiff"]
             self.stateToComeText = 'Diffuser'
         elif self.d["curState"] == 5:
-            self.docState = 'Rev ' + self.d["curVer"] + ' diffusée le ' + self.d["oldDate"]
+            self.docState = 'Rev ' + self.d["curVer"] + ' diffusée le ' + self.d["oldDate"][-1]
             self.PersListToTake = {}
             self.stateToComeText = 'Nouvelle Revision'
 
@@ -164,7 +165,7 @@ class DocMenu(object):
             # Statut a venir
             # --------- Creation de la fenetre
             if self.d["curState"] == 4:
-                stateToComeFrame = LabelFrame(docFrame, text='Date de diffusion :', labelanchor='nw', bd=5, bg='alice blue',
+                stateToComeFrame = LabelFrame(docFrame, text='Date de diffusion : \n(format dd/mm/aaaa)', labelanchor='n', bd=5, bg='alice blue',
                                               borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*100), highlightthickness=2,
                                               highlightbackground='alice blue', font='arial 8 italic', relief=FLAT)
 
@@ -414,6 +415,10 @@ class DocMenu(object):
 
         print('DocMenu.changeState')
 
+        # RECUPERATION DE LA DATE :
+        actualDate = str(str(datetime.datetime.now().day) + '/' + str(datetime.datetime.now().month) + '/' +
+                         str(datetime.datetime.now().year))
+
         docTitle = self.d["docTitle"]
         fileToAnalyse = 'DocList\\' + docTitle
 
@@ -421,18 +426,28 @@ class DocMenu(object):
 
         with open(fileToAnalyse, 'r') as readFile:
             for line in readFile:
-                if self.d['curState'] == 4 :
+                if self.d['curState'] == 4:
                     if line.startswith('STATUTENCOURS'):
                         lineToWrite.append('STATUTENCOURS ' + str(int(line.split(' ')[1])+1) + '\n')
                     elif line.startswith('DATEDEDIFFUSIONREVPREC'):
-                        lineToWrite.append('DATEDEDIFFUSIONREVPREC ' + str(self.changeStateEntry.var.get()) + '\n')
+                        lineToWrite.append(line.replace('\n', '') + ' ' + str(self.changeStateEntry.var.get()) + '\n')
                     else:
                         lineToWrite.append(line)
-                else :
+                elif self.d['curState'] == 1:
                     if line.startswith('STATUTENCOURS'):
                         lineToWrite.append('STATUTENCOURS ' + str(int(line.split(' ')[1])+1) + '\n')
+                    elif line.startswith('DATEDEDIFFUSIONREVPREC'):
+                        lineToWrite.append('DATEDEDIFFUSIONREVPREC ' + actualDate + '\n')
                     else:
                         lineToWrite.append(line)
+                else:
+                    if line.startswith('STATUTENCOURS'):
+                        lineToWrite.append('STATUTENCOURS ' + str(int(line.split(' ')[1])+1) + '\n')
+                    elif line.startswith('DATEDEDIFFUSIONREVPREC'):
+                        lineToWrite.append(line.replace('\n', '') + ' ' + actualDate + '\n')
+                    else:
+                        lineToWrite.append(line)
+
 
         readFile.close()
 
