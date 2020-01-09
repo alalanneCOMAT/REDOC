@@ -20,14 +20,12 @@ class DocSup(object):
     def show(self):
         print('DocSupp.show')
 
-        self.docSupWindow = Toplevel()
+        self.docSupWindow = Toplevel(padx=10, pady=10)
 
         self.docSupWindow.title('Suppression de document')
-        largeur = self.scaleFactor * 500
-        hauteur = self.scaleFactor * 500
-        decalLarg = self.scaleFactor * 80
-        decalHaut = self.scaleFactor * 100
-        self.docSupWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+        decalX = self.scaleFactor * 220
+        decalY = self.scaleFactor * 110
+        self.docSupWindow.geometry('+%d+%d' % (decalX, decalY))
         self.docSupWindow['bg'] = 'light slate gray'
 
         # ACTIONS ---------------------------------------------------------------------------------------------
@@ -35,14 +33,13 @@ class DocSup(object):
         actionFrame = LabelFrame(self.docSupWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
                                  borderwidth=2, width=int(self.scaleFactor*250), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
-        actionFrame.pack_propagate(False)
-        actionFrame.pack(side=TOP, padx=2, pady=5)
+        actionFrame.pack(side=TOP, padx=10, pady=10)
 
         # --------- Boutton SUPPRIMER
         actualiseButton = Button(actionFrame, text='SUPPRIMER ET QUITTER',
                                  command=self.deletefile, state=NORMAL, font='arial 10 bold', foreground='red',
                                  background='black')
-        actualiseButton.pack(side=TOP, pady=5, padx=20)
+        actualiseButton.pack(side=TOP, pady=10, padx=20)
 
         # FENETRE PRINCIPALE
         self.mainFrame = Frame(self.docSupWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400))
@@ -89,13 +86,11 @@ class DocSup(object):
         print('DocSupp.deletefile ' + str(indic))
 
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
-        self.popup = Toplevel()
+        self.popup = Toplevel(padx=10, pady=10)
         self.popup.title('Suppression terminee')
-        largeur = self.scaleFactor * 300
-        hauteur = self.scaleFactor * 120
-        decalLarg = self.scaleFactor * 450
-        decalHaut = self.scaleFactor * 300
-        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+        decalX = self.scaleFactor * 350
+        decalY = self.scaleFactor * 200
+        self.popup.geometry('+%d+%d' % (decalX, decalY))
         self.popup['bg'] = 'alice blue'
 
         # verification de la suppression d'au moins un document

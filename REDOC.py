@@ -31,6 +31,9 @@ class MainWindow(object):
         self.mainWindow = Tk()
 
         self.mainWindow.title('REDOC - Logiciel de relecture de document')
+        decalX = self.scaleFactor * 50
+        decalY = self.scaleFactor * 50
+        self.mainWindow.geometry('+%d+%d' % (decalX, decalY))
         self.mainWindow['bg'] = 'light slate gray'
 
         # GESTION OUVERTURE -----------------------------------------------------------------
@@ -45,19 +48,17 @@ class MainWindow(object):
         if indicOuverture == 1:
             print('MainWindow.AccessOFF')
 
-            largeur = self.scaleFactor*100
-            hauteur = self.scaleFactor*100
+            largeur = self.scaleFactor*50
+            hauteur = self.scaleFactor*50
             decalLarg = self.scaleFactor*10
             decalHaut = self.scaleFactor*10
             self.mainWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
 
-            self.popup = Toplevel()
+            self.popup = Toplevel(padx=10, pady=10)
             self.popup.title('ACCES IMPOSSIBLE')
-            largeur = self.scaleFactor*300
-            hauteur = self.scaleFactor*120
-            decalLarg = self.scaleFactor * 400
-            decalHaut = self.scaleFactor * 250
-            self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+            decalX = self.scaleFactor*160
+            decalY = self.scaleFactor*90
+            self.popup.geometry('+%d+%d' % (decalX, decalY))
             self.popup['bg'] = 'alice blue'
 
             msgText = 'REDOC deja en cours d utilisation'
@@ -176,7 +177,7 @@ class MainWindow(object):
         # Titres des colonnes
         # ---------- frame en-tete tableau
         self.enTeteFrame = Frame(self.tableFrame, bd=1, bg='light slate gray', width=int(self.scaleFactor*880),
-                                 height=int(self.scaleFactor*30), highlightthickness=1, highlightbackground='navy')
+                                 height=int(30), highlightthickness=1, highlightbackground='navy')
         self.enTeteFrame.pack_propagate(False)
         self.enTeteFrame.pack(side=TOP, padx=0, pady=0)
         # ---------- en-têtes
@@ -188,7 +189,7 @@ class MainWindow(object):
                         {"name": "Diffusion", "w": 100}]
 
         for d in entete_confs:
-            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=d["w"],
+            titreFrame = Frame(self.enTeteFrame, bd=1, bg='light slate gray', width=int(self.scaleFactor*d["w"]),
                                height=int(self.scaleFactor*20), highlightthickness=0, highlightbackground='navy')
             titreFrame.pack_propagate(False)
             titreFrame.pack(side=LEFT, padx=0, pady=0)
@@ -304,12 +305,12 @@ class MainWindow(object):
                 # PLACEMENT DE LA NC DANS LE TABLEAU
                 # Creation de la fenetre
                 docMainWindow = Frame(self.tableFrame, bd=1, bg='alice blue', width=int(self.scaleFactor*880),
-                                      height=int(self.scaleFactor*30), highlightthickness=1, highlightbackground='navy')
+                                      height=int(30), highlightthickness=1, highlightbackground='navy')
                 docMainWindow.pack_propagate(False)
                 docMainWindow.pack(side=TOP, padx=0, pady=0)
                 # ------------- Bouton du titre
                 titleButton = Button(docMainWindow, text=docTitle, width=int(self.scaleFactor*57),
-                                     height=int(self.scaleFactor*30), state=NORMAL, font='arial 9 bold',
+                                     height=int(30), state=NORMAL, font='arial 9 bold',
                                      foreground='gray10', anchor=W)
                 o = DocMenu(dico)
                 self.sub_windows.append(o)
@@ -318,23 +319,23 @@ class MainWindow(object):
                 titleButton.pack(side=LEFT, pady=0, padx=0)
                 # ------------- Revision
                 revFrame = Frame(docMainWindow, bd=1, bg='alice blue', width=int(self.scaleFactor*55),
-                                 height=int(self.scaleFactor*20), highlightthickness=0, highlightbackground='navy')
+                                 height=int(20), highlightthickness=0, highlightbackground='navy')
                 revFrame.pack_propagate(False)
                 revFrame.pack(side=LEFT, padx=0, pady=0)
                 revLabel = Label(revFrame, text=curVer, foreground='gray10', bg='alice blue', font='arial 9 bold')
                 revLabel.pack()
 
                 # ------------ Redaction
-                redacFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                redacFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(20),
                                    highlightthickness=0)
                 # ------------ Relecture
-                relecFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                relecFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(20),
                                    highlightthickness=0)
                 # ------------ Signature
-                signFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                signFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(20),
                                   highlightthickness=0)
                 # ------------ diffusion
-                diffFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(self.scaleFactor*20),
+                diffFrame = Frame(docMainWindow, bd=1, width=int(self.scaleFactor*96), height=int(20),
                                   highlightthickness=0)
 
                 # Acquisition de la date de la date de chgt de statut

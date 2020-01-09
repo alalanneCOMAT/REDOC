@@ -21,13 +21,10 @@ class PersSup(object):
         print('PersSupp.show')
 
         self.persSupWindow = Toplevel()
-
+        decalX = self.scaleFactor * 220
+        decalY = self.scaleFactor * 110
+        self.persSupWindow.geometry('+%d+%d' % (decalX, decalY))
         self.persSupWindow.title('Personne - Menu suppression')
-        largeur = self.scaleFactor * 500
-        hauteur = self.scaleFactor * 500
-        decalLarg = self.scaleFactor * 80
-        decalHaut = self.scaleFactor * 100
-        self.persSupWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.persSupWindow['bg'] = 'light slate gray'
 
         # ACTIONS ---------------------------------------------------------------------------------------------
@@ -35,21 +32,20 @@ class PersSup(object):
         actionFrame = LabelFrame(self.persSupWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
                                  borderwidth=2, width=int(self.scaleFactor*250), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
-        actionFrame.pack_propagate(False)
-        actionFrame.pack(side=TOP, padx=2, pady=5)
+        actionFrame.pack(side=TOP, padx=5, pady=5)
 
         # --------- Boutton SUPPRIMER
         actualiseButton = Button(actionFrame, text='SUPPRIMER ET QUITTER',
                                  command=self.deletefile, state=NORMAL, font='arial 10 bold', foreground='red',
                                  background='black')
-        actualiseButton.pack(side=TOP, pady=5, padx=20)
+        actualiseButton.pack(side=TOP, pady=10, padx=20)
 
         # FENETRE PRINCIPALE
-        self.mainFrame = Frame(self.persSupWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400))
-        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400))
+        self.mainFrame = Frame(self.persSupWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*300))
+        self.canvasContainer = Canvas(self.mainFrame, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*300))
         self.defilY = Scrollbar(self.mainFrame, orient='vertical', command=self.canvasContainer.yview)
         self.buttonFram = LabelFrame(self.canvasContainer, text='Liste des personnes', labelanchor='nw', bd=5,
-                                     bg='alice blue', borderwidth=2, width=int(self.scaleFactor*450), height=int(self.scaleFactor*400), highlightthickness=5,
+                                     bg='alice blue', borderwidth=2, width=int(self.scaleFactor*450), height=int(self.scaleFactor*300), highlightthickness=5,
                                      highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
         self.defilY.bind("<Configure>",
                          lambda e: self.canvasContainer.configure(scrollregion=self.canvasContainer.bbox("all")))
@@ -57,7 +53,7 @@ class PersSup(object):
         self.canvasContainer.create_window((0, 0), window=self.buttonFram, anchor='nw')
         self.canvasContainer.configure(yscrollcommand=self.defilY.set)
 
-        self.mainFrame.pack(side=TOP)
+        self.mainFrame.pack(side=TOP, padx=10, pady=10)
         self.canvasContainer.pack(side=LEFT)
         self.defilY.pack(side='right', fill='y')
 
@@ -89,13 +85,11 @@ class PersSup(object):
         print('PersSupp.deletePers ' + str(indic))
 
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
-        self.popup = Toplevel()
+        self.popup = Toplevel(padx=10, pady=10)
+        decalX = self.scaleFactor * 350
+        decalY = self.scaleFactor * 200
+        self.popup.geometry('+%d+%d' % (decalX, decalY))
         self.popup.title('Suppression terminee')
-        largeur = self.scaleFactor * 300
-        hauteur = self.scaleFactor * 120
-        decalLarg = self.scaleFactor * 450
-        decalHaut = self.scaleFactor * 300
-        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.popup['bg'] = 'alice blue'
 
         # verification de la suppression d'au moins une personne
@@ -121,6 +115,8 @@ class PersSup(object):
         but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL, width=int(self.scaleFactor*20),
                      font='arial 10 bold', foreground='black', bg='grey60')
         but.pack(side=TOP, pady=5)
+
+        self.popup
 
     def destroyWindow(self):
         for window in self.windowList:

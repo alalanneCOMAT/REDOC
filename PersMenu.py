@@ -40,14 +40,12 @@ class PersMenu(object):
 
         print("PersMenu.show")
 
-        self.persWindow = Toplevel()
+        self.persWindow = Toplevel(padx=10, pady=10)
 
         self.persWindow.title(self.fullName + ' - Menu des actions')
-        largeur = self.scaleFactor * 600
-        hauteur = self.scaleFactor * 500
-        decalLarg = self.scaleFactor * 80
-        decalHaut = self.scaleFactor * 100
-        self.persWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+        decalX = self.scaleFactor * 220
+        decalY = self.scaleFactor * 110
+        self.persWindow.geometry('+%d+%d' % (decalX, decalY))
         self.persWindow['bg'] = 'light slate gray'
 
         # Recuperation des donnees
@@ -112,14 +110,13 @@ class PersMenu(object):
         actionFrame = LabelFrame(self.persWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
                                  borderwidth=2, width=int(self.scaleFactor*300), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
-        actionFrame.pack_propagate(False)
-        actionFrame.pack(side=TOP, padx=2, pady=5)
+        actionFrame.pack(side=TOP, padx=10, pady=10)
 
         # --------- Boutton SAUVEGARDER
         actualiseButton = Button(actionFrame, text='SAUVEGARDER ET QUITTER',
                                  command=self.saveAndQuit, state=NORMAL, font='arial 10 bold',
                                  foreground='deep pink', background='black')
-        actualiseButton.pack(side=TOP, pady=5, padx=20)
+        actualiseButton.pack(side=TOP, pady=10, padx=30)
 
         # INFORMATIONS -------------------------------------------------------------------------------------------
         self.mainFrame = Frame(self.persWindow, bg='alice blue', width=int(self.scaleFactor*550), height=int(self.scaleFactor*500), highlightthickness=0, padx=5,
@@ -256,13 +253,11 @@ class PersMenu(object):
                     currentFile.write(line)
 
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
-        self.popup = Toplevel()
+        self.popup = Toplevel(padx=10, pady=10)
         self.popup.title(self.fullName + ' - Modifications')
-        largeur = self.scaleFactor * 300
-        hauteur = self.scaleFactor * 120
-        decalLarg = self.scaleFactor * 450
-        decalHaut = self.scaleFactor * 300
-        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+        decalX = self.scaleFactor * 350
+        decalY = self.scaleFactor * 200
+        self.popup.geometry('+%d+%d' % (decalX, decalY))
         self.popup['bg'] = 'alice blue'
 
         if trigger0 == 0:

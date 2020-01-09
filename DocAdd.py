@@ -18,14 +18,11 @@ class DocAdd(object):
     def show(self):
         print('DocAdd.show')
 
-        self.docAddWindow = Toplevel()
-
+        self.docAddWindow = Toplevel(padx=10, pady=10)
+        decalX = self.scaleFactor * 220
+        decalY = self.scaleFactor * 110
+        self.docAddWindow.geometry('+%d+%d' % (decalX, decalY))
         self.docAddWindow.title('Ajout de document')
-        largeur = self.scaleFactor * 500
-        hauteur = self.scaleFactor * 500
-        decalLarg = self.scaleFactor * 80
-        decalHaut = self.scaleFactor * 100
-        self.docAddWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
         self.docAddWindow['bg'] = 'light slate gray'
 
         # ACTIONS ---------------------------------------------------------------------------------------------
@@ -33,21 +30,21 @@ class DocAdd(object):
         actionFrame = LabelFrame(self.docAddWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
                                  borderwidth=2, width=int(self.scaleFactor*250), height=int(self.scaleFactor*70), highlightthickness=5,
                                  highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
-        actionFrame.pack_propagate(False)
-        actionFrame.pack(side=TOP, padx=5, pady=5)
+        actionFrame.pack(side=TOP, padx=10, pady=10)
 
         # --------- Boutton SUPPRIMER
         actualiseButton = Button(actionFrame, text='AJOUTER ET QUITTER', state=NORMAL, font='arial 10 bold',
                                  foreground='chartreuse3', background='black', command=self.addFile)
-        actualiseButton.pack(side=TOP, pady=5, padx=20)
+        actualiseButton.pack(side=TOP, pady=10, padx=20)
 
         # FENETRE PRINCIPALE
-        self.mainFrame = Frame(self.docAddWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*500), highlightthickness=0)
+        self.mainFrame = Frame(self.docAddWindow, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400), highlightthickness=0)
         self.docInfoFrame = LabelFrame(self.mainFrame, text='Informations pour la création du document',
-                                       labelanchor='nw', bd=5, bg='alice blue', borderwidth=2, width=int(self.scaleFactor*450), height=int(self.scaleFactor*400),
+                                       labelanchor='nw', bd=5, bg='alice blue', borderwidth=2, width=int(self.scaleFactor*475), height=int(self.scaleFactor*400),
                                        highlightthickness=0, highlightbackground='alice blue', foreground='navy',
                                        font='arial 9 italic bold')
         self.mainFrame.pack(side=TOP, pady=10)
+        self.docInfoFrame.pack_propagate(False)
         self.docInfoFrame.pack(padx=5, pady=5)
 
         # Fenetre de titre :
@@ -80,7 +77,7 @@ class DocAdd(object):
 
         self.mainDocPersFrame = LabelFrame(self.canvasContainer, foreground='navy', labelanchor='nw',
                                            text='Personnes concernées - cocher chacune des categories',
-                                           bg='alice blue',  width=int(self.scaleFactor*430), height=int(self.scaleFactor*430), font='arial 9 italic',
+                                           bg='alice blue',  width=int(self.scaleFactor*430), height=int(self.scaleFactor*350), font='arial 9 italic',
                                            borderwidth=2, highlightthickness=0, highlightbackground='alice blue')
         self.defilY.bind("<Configure>",
                          lambda e: self.canvasContainer.configure(scrollregion=self.canvasContainer.bbox("all")))
@@ -178,13 +175,11 @@ class DocAdd(object):
         fileToCreate.close()
 
         # FENETRE POP UP AVEC CONSIGN UTILISATEUR
-        self.popup = Toplevel()
+        self.popup = Toplevel(padx=10, pady=10)
         self.popup.title('Ajout terminee')
-        largeur = self.scaleFactor * 300
-        hauteur = self.scaleFactor * 120
-        decalLarg = self.scaleFactor * 450
-        decalHaut = self.scaleFactor * 300
-        self.popup.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+        decalX = self.scaleFactor * 350
+        decalY = self.scaleFactor * 200
+        self.popup.geometry('+%d+%d' % (decalX, decalY))
         self.popup['bg'] = 'alice blue'
 
         msg = Message(self.popup, text='Nouveau document bien ajoute', anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
