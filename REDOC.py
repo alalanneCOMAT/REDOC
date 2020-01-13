@@ -20,7 +20,7 @@ class MainWindow(object):
 
     def __init__(self):
 
-        # REUCUPERATION DE LA TAILLE DE LECRAN
+        # RECUPERATION DE LA TAILLE DE LECRAN
         usr32 = ctypes.windll.user32
         largeurEcran = usr32.GetSystemMetrics(0)
         hauteurEcran = usr32.GetSystemMetrics(1)
@@ -89,11 +89,11 @@ class MainWindow(object):
             fileToCreate.close()
             # -----------------------------------------------------------------------------------
 
-            largeur = self.scaleFactor*1100
-            hauteur = self.scaleFactor*650
-            decalLarg = self.scaleFactor*10
-            decalHaut = self.scaleFactor*10
-            self.mainWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
+            self.largeur = self.scaleFactor*1100
+            self.hauteur = self.scaleFactor*650
+            self.decalLarg = self.scaleFactor*10
+            self.decalHaut = self.scaleFactor*10
+            self.mainWindow.geometry('%dx%d+%d+%d' % (self.largeur, self.hauteur, self.decalLarg, self.decalHaut))
 
             print("MainWindow.__init__")
 
@@ -157,7 +157,14 @@ class MainWindow(object):
         self.mainWindow.mainloop()
 
     def actualiseEnvironement(self):
+
+        #Recuperation taille de la fenetre
+        self.actualWidth = self.mainWindow.winfo_width()
+        self.scaleFactor = self.actualWidth/self.largeur
+
         print("MainWindow.actualiseEnvironement")
+
+        #print(self.mainWindow.winfo_height())
 
         self.docListFil = sorted(os.listdir("DocList"))
         self.persListFil = sorted(os.listdir("PersList"))
@@ -252,6 +259,8 @@ class MainWindow(object):
                         commentaire4 = line.replace('COMMENTAIRE4 ', '').replace('\n', '')
                     elif line.startswith('COMMENTAIRE5'):
                         commentaire5 = line.replace('COMMENTAIRE5 ', '').replace('\n', '')
+                    elif line.startswith('LINK'):
+                        link = line.replace('\n', '').replace('LINK ','')
                     elif line.startswith('REDACTION'):
                         activateRedac = 1
                         activateRelec = 0
@@ -294,7 +303,8 @@ class MainWindow(object):
                     'listRelec': listRelec,
                     'listSign': listSign,
                     'listDiff': listDiff,
-                    'commentaires': [commentaire1, commentaire2, commentaire3, commentaire4, commentaire5]}
+                    'commentaires': [commentaire1, commentaire2, commentaire3, commentaire4, commentaire5],
+                    'link': link}
 
             trigerActiveResp = 0
             for people in dico['listRedac']:
@@ -417,7 +427,7 @@ class MainWindow(object):
         self.canvasContainer.create_window((0, 0), window=self.tableFrame, anchor='nw')
         self.canvasContainer.configure(yscrollcommand=self.defilY.set)
 
-        self.mainFrame.pack(side=LEFT, padx=10)
+        self.mainFrame.pack(side=LEFT, padx=10, pady=10)
         self.canvasContainer.pack(side=LEFT)
         self.defilY.pack(side='right', fill='y')
 

@@ -71,6 +71,21 @@ class DocAdd(object):
         self.docRevEntry.insert(0, 'rev')
         self.docRevEntry.pack(side=RIGHT, padx=2, pady=2)
 
+        self.docLinkFrame = LabelFrame(self.docInfoFrame, text='Lien du dossier associe', labelanchor='nw', bd=5,
+                                        bg='alice blue', borderwidth=2, width=int(self.scaleFactor*430), height=int(self.scaleFactor*50), highlightthickness=0,
+                                        highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
+
+        self.docLinkFrame.pack_propagate(False)
+        self.docLinkFrame.pack(padx=2, pady=2)
+
+        # LINK
+        value = StringVar()
+        self.docLinkEntry = Entry(self.docLinkFrame, textvariable=value, font='arial 8',
+                                   highlightthickness=0, width=int(self.scaleFactor*65))
+        self.docLinkEntry.var = value
+        self.docLinkEntry.insert(0, 'lien')
+        self.docLinkEntry.pack(side=LEFT, padx=2, pady=2)
+
         # Fenetre Personne
         self.canvasContainer = Canvas(self.docInfoFrame, bg='alice blue', width=int(self.scaleFactor*450), height=int(self.scaleFactor*400), highlightthickness=0)
         self.defilY = Scrollbar(self.docInfoFrame, orient='vertical', command=self.canvasContainer.yview)
@@ -112,7 +127,8 @@ class DocAdd(object):
             for pers in self.persListFil:
                 checkValue = IntVar()
                 self.doc[j].append(Checkbutton(self.frameTitle[j], text=pers, variable=checkValue, onvalue=1,
-                                            offvalue=0, bg='alice blue', font='arial 9', width=int(self.scaleFactor*20), anchor=W))
+                                               offvalue=0, bg='alice blue', font='arial 9',
+                                               width=int(self.scaleFactor*20), anchor=W))
 
                 self.doc[j][i].var = checkValue
                 self.doc[j][i].pack(side=TOP, padx=20, pady=0)
@@ -127,9 +143,12 @@ class DocAdd(object):
     def addFile(self):
         print('DocAdd.addFile')
 
-        # Acquisition titre et rev
+        # Acquisition titre et rev et lien
         self.docTitle = self.docTitleEntry.var.get()
         self.docRev = self.docRevEntry.var.get()
+        self.docLink = r"%s" % self.docLinkEntry.var.get()
+
+        print (self.docLink)
 
         # Acquisition personnes concernees
         self.persListSelec = {}
@@ -171,6 +190,7 @@ class DocAdd(object):
         fileToCreate.write('COMMENTAIRE3 \n')
         fileToCreate.write('COMMENTAIRE4 \n')
         fileToCreate.write('COMMENTAIRE5 \n')
+        fileToCreate.write('LINK ' + self.docLink + '\n')
 
         fileToCreate.close()
 

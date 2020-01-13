@@ -4,6 +4,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 import ctypes
 import datetime
+import os
 
 
 class DocMenu(object):
@@ -26,7 +27,8 @@ class DocMenu(object):
                     'listRelec': listRelec,
                     'listSign': listSign,
                     'listDiff': listDiff,
-                    'commentaires': [commentaire1, commentaire2, commentaire3, commentaire4, commentaire5]}
+                    'commentaires': [commentaire1, commentaire2, commentaire3, commentaire4, commentaire5],
+                    'link' : link}
         '''
 
         # DEFINITION DE PARAMETRES
@@ -75,7 +77,14 @@ class DocMenu(object):
         actualiseButton = Button(actionFrame, text='SAUVEGARDER ET QUITTER',
                                  command=self.saveAndQuit, state=NORMAL, font='arial 10 bold', foreground='deep pink',
                                  background='black')
-        actualiseButton.pack(side=TOP, pady=10, padx=20)
+        actualiseButton.pack(side=TOP, pady=5, padx=20)
+
+        # ---------- Bouton ouverture du document
+        self.totalLink = r'%s' % (self.d["link"]) + '\\' + self.d["docTitle"]
+        openDocButton = Button(actionFrame, text='OUVRIR DOCUMENT',
+                                 command=self.openDoc, state=NORMAL, font='arial 10 bold', foreground='deep pink',
+                                 background='black')
+        openDocButton.pack(side=TOP, pady=5, padx=20)
 
         # AFFICHAGE DE LA NC
         # placement fenetre NC
@@ -115,7 +124,8 @@ class DocMenu(object):
 
             # --------- Ecriture du statut
             frameState = Label(stateFrame, text=self.docState, bg='alice blue', font='arial 9 bold')
-            frameState.pack(side=TOP, pady=2, padx=10)
+            frameState.pack(side=TOP, pady=5, padx=10)
+
 
         if self.d["curState"] != 5:
             # Personne associees :
@@ -493,3 +503,38 @@ class DocMenu(object):
     def destroyWindow(self):
         for window in self.windowList:
             window.destroy()
+
+    def openDoc(self):
+        print(self.totalLink)
+        try:
+            lien = self.totalLink
+            os.startfile(lien)
+        except:
+            try:
+                lien = self.totalLink + '.pdf'
+                os.startfile(lien)
+            except:
+                try:
+                    lien = self.totalLink + '.doc'
+                    os.startfile(lien)
+                except:
+                    try:
+                        lien = self.totalLink + '.docx'
+                        os.startfile(lien)
+                    except:
+                        # FENETRE POP UP AVEC CONSIGN UTILISATEUR
+                        self.popup2 = Toplevel(padx=10, pady=10)
+                        self.popup2.title('Changement de statut')
+                        decalX = self.scaleFactor * 350
+                        decalY = self.scaleFactor * 200
+                        self.popup2.geometry('+%d+%d' % (decalX, decalY))
+                        self.popup2['bg'] = 'alice blue'
+
+                        msg = Message(self.popup2, text='Document introuvable. Chemin essaye : ', anchor=CENTER,
+                                      bg='alice blue',
+                                      width=int(self.scaleFactor * 250), font='arial 9 bold')
+                        msg.pack(side=TOP, pady=5)
+                        msg2 = Message(self.popup2,
+                                       text=self.totalLink,
+                                       anchor=CENTER, bg='alice blue', width=int(self.scaleFactor * 250), font='arial 9')
+                        msg2.pack(side=TOP, pady=0)
