@@ -25,14 +25,14 @@ class MainWindow(object):
         largeurEcran = usr32.GetSystemMetrics(0)
         hauteurEcran = usr32.GetSystemMetrics(1)
 
-        self.scaleFactor = float(int(largeurEcran)/1366)
+        self.startScaleFactor = float(int(largeurEcran)/1366)
 
         # CREATION DE LA FENETRE PRINCIPALE --------------------------------------------------------------------------
         self.mainWindow = Tk()
 
         self.mainWindow.title('REDOC - Logiciel de relecture de document')
-        decalX = self.scaleFactor * 50
-        decalY = self.scaleFactor * 50
+        decalX = self.startScaleFactor * 50
+        decalY = self.startScaleFactor * 50
         self.mainWindow.geometry('+%d+%d' % (decalX, decalY))
         self.mainWindow['bg'] = 'light slate gray'
 
@@ -48,33 +48,33 @@ class MainWindow(object):
         if indicOuverture == 1:
             print('MainWindow.AccessOFF')
 
-            largeur = self.scaleFactor*50
-            hauteur = self.scaleFactor*50
-            decalLarg = self.scaleFactor*10
-            decalHaut = self.scaleFactor*10
+            largeur = self.startScaleFactor*50
+            hauteur = self.startScaleFactor*50
+            decalLarg = self.startScaleFactor*10
+            decalHaut = self.startScaleFactor*10
             self.mainWindow.geometry('%dx%d+%d+%d' % (largeur, hauteur, decalLarg, decalHaut))
 
             self.popup = Toplevel(padx=10, pady=10)
             self.popup.title('ACCES IMPOSSIBLE')
-            decalX = self.scaleFactor*160
-            decalY = self.scaleFactor*90
+            decalX = self.startScaleFactor*160
+            decalY = self.startScaleFactor*90
             self.popup.geometry('+%d+%d' % (decalX, decalY))
             self.popup['bg'] = 'alice blue'
 
             msgText = 'REDOC deja en cours d utilisation'
             msg2text = 'La fenetre va se fermer \nAppuyer sur OK'
 
-            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
+            msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.startScaleFactor*250),
                           font='arial 9 bold')
             msg.pack(side=TOP, pady=5)
-            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250),
+            msg2 = Message(self.popup, text=msg2text, anchor=CENTER, bg='alice blue', width=int(self.startScaleFactor*250),
                            font='arial 9')
             msg2.pack(side=TOP, pady=0)
 
             self.windowList = [self.popup, self.mainWindow]
 
             but = Button(self.popup, text='OK', command=self.destroyWindow, state=NORMAL,
-                         width=int(self.scaleFactor*20), font='arial 10 bold', foreground='black', bg='grey60')
+                         width=int(self.startScaleFactor*20), font='arial 10 bold', foreground='black', bg='grey60')
             but.pack(side=TOP, pady=5)
 
         else:
@@ -89,10 +89,10 @@ class MainWindow(object):
             fileToCreate.close()
             # -----------------------------------------------------------------------------------
 
-            self.largeur = self.scaleFactor*1100
-            self.hauteur = self.scaleFactor*650
-            self.decalLarg = self.scaleFactor*10
-            self.decalHaut = self.scaleFactor*10
+            self.largeur = self.startScaleFactor*1100
+            self.hauteur = self.startScaleFactor*650
+            self.decalLarg = self.startScaleFactor*10
+            self.decalHaut = self.startScaleFactor*10
             self.mainWindow.geometry('%dx%d+%d+%d' % (self.largeur, self.hauteur, self.decalLarg, self.decalHaut))
 
             print("MainWindow.__init__")
@@ -100,7 +100,7 @@ class MainWindow(object):
             # ACTIONS PERMANENTES -------------------------------------------------------------------------------------
             # Creation de la fenetre
             actionFrame = LabelFrame(self.mainWindow, text='Action permanente', labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=2, width=int(self.scaleFactor*150), height=int(self.scaleFactor*635),
+                                     borderwidth=2, width=int(self.startScaleFactor*150), height=int(self.startScaleFactor*635),
                                      highlightthickness=5, highlightbackground='alice blue', font='arial 9 italic',
                                      foreground='navy')
             actionFrame.pack_propagate(False)
@@ -113,15 +113,15 @@ class MainWindow(object):
 
             # BLOC DE RESPONSABILITE
             # --------- Creation de la fenetre
-            frameContainer = Frame(actionFrame, bg='alice blue', width=int(self.scaleFactor*150),
-                                   height=int(self.scaleFactor*100))
-            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.scaleFactor*100),
-                                     height=int(self.scaleFactor*110), highlightthickness=0)
+            frameContainer = Frame(actionFrame, bg='alice blue', width=int(self.startScaleFactor*150),
+                                   height=int(self.startScaleFactor*100))
+            canvasContainer = Canvas(frameContainer, bg='alice blue', width=int(self.startScaleFactor*100),
+                                     height=int(self.startScaleFactor*110), highlightthickness=0)
             defilY = Scrollbar(frameContainer, orient='vertical', command=canvasContainer.yview)
 
             peopleText = 'Responsabilite'
             peopleFrame = LabelFrame(frameContainer, text=peopleText, labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=int(self.scaleFactor*80), height=int(self.scaleFactor*50),
+                                     borderwidth=1, width=int(self.startScaleFactor*80), height=int(self.startScaleFactor*50),
                                      highlightthickness=2, highlightbackground='alice blue', font='arial 7',
                                      relief=GROOVE)
 
@@ -160,7 +160,7 @@ class MainWindow(object):
 
         #Recuperation taille de la fenetre
         self.actualWidth = self.mainWindow.winfo_width()
-        self.scaleFactor = self.actualWidth/self.largeur
+        self.scaleFactor = self.actualWidth*self.startScaleFactor/self.largeur
 
         print("MainWindow.actualiseEnvironement")
 

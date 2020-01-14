@@ -80,7 +80,7 @@ class DocMenu(object):
         actualiseButton.pack(side=TOP, pady=5, padx=20)
 
         # ---------- Bouton ouverture du document
-        self.totalLink = r'%s' % (self.d["link"]) + '\\' + self.d["docTitle"]
+        self.totalLink = r'%s' % (self.d["link"]).replace('TOTO', r'é') + '\\' + self.d["docTitle"]
         openDocButton = Button(actionFrame, text='OUVRIR DOCUMENT',
                                  command=self.openDoc, state=NORMAL, font='arial 10 bold', foreground='deep pink',
                                  background='black')
@@ -505,7 +505,6 @@ class DocMenu(object):
             window.destroy()
 
     def openDoc(self):
-        print(self.totalLink)
         try:
             lien = self.totalLink
             os.startfile(lien)
@@ -534,7 +533,6 @@ class DocMenu(object):
                                       bg='alice blue',
                                       width=int(self.scaleFactor * 250), font='arial 9 bold')
                         msg.pack(side=TOP, pady=5)
-                        msg2 = Message(self.popup2,
-                                       text=self.totalLink,
-                                       anchor=CENTER, bg='alice blue', width=int(self.scaleFactor * 250), font='arial 9')
+                        msg2 = Message(self.popup2, text=self.totalLink, anchor=CENTER, bg='alice blue',
+                                       width=int(self.scaleFactor * 250), font='arial 9')
                         msg2.pack(side=TOP, pady=0)

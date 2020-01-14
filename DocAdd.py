@@ -146,9 +146,7 @@ class DocAdd(object):
         # Acquisition titre et rev et lien
         self.docTitle = self.docTitleEntry.var.get()
         self.docRev = self.docRevEntry.var.get()
-        self.docLink = r"%s" % self.docLinkEntry.var.get()
-
-        print (self.docLink)
+        self.docLink = r"%s" % self.docLinkEntry.var.get().replace(r'é', 'TOTO')
 
         # Acquisition personnes concernees
         self.persListSelec = {}
