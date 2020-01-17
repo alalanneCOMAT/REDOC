@@ -121,7 +121,8 @@ class MainWindow(object):
 
             peopleText = 'Responsabilite'
             peopleFrame = LabelFrame(frameContainer, text=peopleText, labelanchor='nw', bd=5, bg='alice blue',
-                                     borderwidth=1, width=int(self.startScaleFactor*80), height=int(self.startScaleFactor*50),
+                                     borderwidth=1, width=int(self.startScaleFactor*120),
+                                     height=int(self.startScaleFactor*100),
                                      highlightthickness=2, highlightbackground='alice blue', font='arial 7',
                                      relief=GROOVE)
 
@@ -139,7 +140,7 @@ class MainWindow(object):
             for pers in self.persListFilBrut:
                 self.persListFil.append(pers.split('.')[0])
 
-            # --------------------- Ajout des noms dans la fenetre deja tous coché
+            # --------------------- Ajout des noms dans la fenetre deja tous cochés
             self.peoples = []
             i = 0
             for cle in self.persListFil:
@@ -150,8 +151,15 @@ class MainWindow(object):
                                                 offvalue=0, font='arial 7', bg='alice blue'))
                 self.peoples[i].select()
                 self.peoples[i].var = checkValue
-                self.peoples[i].pack(side=TOP, padx=20, pady=0, anchor=W)
+                self.peoples[i].pack(side=TOP, padx=10, pady=0, anchor=W)
                 i += 1
+
+            # -------------------- Ajout bouton cocher decocher :
+            self.respButtonState = 1
+            self.respButton = Button(actionFrame, text='TOUT DECOCHER', command=self.respButtonFun, width=15, heigh=1,
+                                     state=NORMAL, font='arial 7', foreground='alice blue', background='gray10')
+            self.respButton.pack_propagate(False)
+            self.respButton.pack(side=TOP, padx=10, pady=5)
 
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.onClosing)
         self.mainWindow.mainloop()
@@ -465,6 +473,27 @@ class MainWindow(object):
             fileToCreate.close()
 
             self.mainWindow.destroy()
+
+    def respButtonFun(self):
+
+        if self.respButtonState == 0:
+            for button in self.peoples:
+                checkValue = IntVar()
+                checkValue.set(1)
+                button.select()
+                button.var = checkValue
+
+            self.respButtonState = 1
+            self.respButton.config(text='TOUT DECOCHER')
+        else:
+            for button in self.peoples:
+                checkValue = IntVar()
+                checkValue.set(0)
+                button.deselect()
+                button.var = checkValue
+
+            self.respButtonState = 0
+            self.respButton.config(text='TOUT COCHER')
 
 
 if __name__ == "__main__":
