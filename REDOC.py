@@ -478,19 +478,13 @@ class MainWindow(object):
 
         if self.respButtonState == 0:
             for button in self.peoples:
-                checkValue = IntVar()
-                checkValue.set(1)
                 button.select()
-                button.var = checkValue
 
             self.respButtonState = 1
             self.respButton.config(text='TOUT DECOCHER')
         else:
             for button in self.peoples:
-                checkValue = IntVar()
-                checkValue.set(0)
                 button.deselect()
-                button.var = checkValue
 
             self.respButtonState = 0
             self.respButton.config(text='TOUT COCHER')
