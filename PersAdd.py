@@ -94,7 +94,7 @@ class PersAdd(object):
                       width=int(self.scaleFactor*250), font='arial 9 bold')
         msg.pack(side=TOP, pady=5)
         msg2 = Message(self.popup, anchor=CENTER, bg='alice blue', width=int(self.scaleFactor*250), font='arial 9',
-                       text='La fenetre liée au menu va se fermée \nMerci d actualiser la fenetre principale')
+                       text='La fenetre liée au menu va se fermée \nMERCI DE REDEMARRER REDOC')
         msg2.pack(side=TOP, pady=0)
 
         self.windowList = [self.popup, self.persAddWindow]

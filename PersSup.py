@@ -7,8 +7,9 @@ import ctypes
 
 class PersSup(object):
 
-    def __init__(self, persList=None):
+    def __init__(self, persList=None, docList=None):
         self.persList = persList
+        self.docList = docList
 
         # REUCUPERATION DE LA TAILLE DE LECRAN
         usr32 = ctypes.windll.user32
@@ -58,12 +59,31 @@ class PersSup(object):
         self.defilY.pack(side='right', fill='y')
 
         # Remplissage de la fenetre
+
+        # ----------------- Note Avant list
+        self.note = Label(self.buttonFram, text='NOTE : Les personnes grisees ne peuvent être supprimées\n'
+                                                'puisqu elles sont impliquees dans un (ou plusieurs) documents',
+                          bg='alice blue', font='arial 8 italic')
+        self.note.pack(side=TOP, padx=5, pady=5)
         self.doc = []
         i = 0
         for persTitle in self.persList:
+            triggerDisabled = 0
+            # ----------------------- ETABLIR LETAT DU CHECK BUTTON
+            for doc in self.docList:
+                fileToAnalyse = 'DocList\\' + doc
+                with open(fileToAnalyse, 'r') as readFile:
+                    for line in readFile:
+                        if line.startswith(persTitle + ' '):
+                            triggerDisabled = 1
+                readFile.close()
+
+            # ----------------------- FAIRE LE CHECK BUTTON
             checkValue = IntVar()
             self.doc.append(Checkbutton(self.buttonFram, text=persTitle, variable=checkValue, onvalue=1,
                                         offvalue=0, bg='alice blue', font='arial 9', width=int(self.scaleFactor*52), anchor=W))
+            if triggerDisabled == 1:
+                self.doc[i].config(state=DISABLED)
 
             self.doc[i].var = checkValue
             self.doc[i].pack(side=TOP, padx=20, pady=0, anchor=W)
@@ -103,7 +123,7 @@ class PersSup(object):
             msg2text = 'La fenetre liée au menu va se fermée'
         else:
             msgText = 'Personnes supprimees'
-            msg2text = 'La fenetre liée au menu va se fermée \nMerci d actualiser la fenetre principale'
+            msg2text = 'La fenetre liée au menu va se fermée \nMERCI DE REDEMARRER REDOC'
 
         msg = Message(self.popup, text=msgText, anchor=CENTER, bg ='alice blue', width=int(self.scaleFactor*250), font='arial 9 bold')
         msg.pack(side=TOP, pady=5)

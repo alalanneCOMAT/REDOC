@@ -41,8 +41,13 @@ class MainWindow(object):
 
         with open(fileToAnalyse, 'r') as readFile:
 
+            indicLine = 0
             for line in readFile:
-                indicOuverture = int(str(line))
+                if indicLine == 0:
+                    indicOuverture = int(str(line))
+                elif indicLine == 1:
+                    currentName = str(line.replace('\n', ''))
+                indicLine += 1
         # -----------------------------------------------------------------------------------
 
         if indicOuverture == 1:
@@ -61,7 +66,10 @@ class MainWindow(object):
             self.popup.geometry('+%d+%d' % (decalX, decalY))
             self.popup['bg'] = 'alice blue'
 
-            msgText = 'REDOC deja en cours d utilisation'
+            try :
+                msgText = 'REDOC deja en cours d utilisation par ' + currentName
+            except:
+                msgText = 'REDOC deja en cours d utilisation'
             msg2text = 'La fenetre va se fermer \nAppuyer sur OK'
 
             msg = Message(self.popup, text=msgText, anchor=CENTER, bg='alice blue', width=int(self.startScaleFactor*250),
@@ -82,10 +90,11 @@ class MainWindow(object):
             print('MainWindow.AccessON')
 
             # GESTION OUVERTURE -----------------------------------------------------------------
+            name = os.getlogin()
             fileToWrite = 'UseFile\\' + 'indicOuverture'
             fileToCreate = open(fileToWrite, "w+")
 
-            fileToCreate.write('1')
+            fileToCreate.write('1\n' + name)
             fileToCreate.close()
             # -----------------------------------------------------------------------------------
 
@@ -452,7 +461,7 @@ class MainWindow(object):
         menuPers = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label='Personne', menu=menuPers)
         menuPers.add_command(label='Ajouter', command=PersAdd().show)
-        menuPers.add_command(label='Supprimer', command=PersSup(self.persListFil).show)
+        menuPers.add_command(label='Supprimer', command=PersSup(self.persListFil, self.docListFil).show)
         menuPers.add_separator()
 
         for i in range(0, len(self.persListFil)):
@@ -492,8 +501,8 @@ class MainWindow(object):
 
 if __name__ == "__main__":
     #
-    # ---------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------
     # OPEN THE MAIN WINDOW AND COLLECT STATUS
     my_main_window = MainWindow()
     #
-    # ----------------------------------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------------
