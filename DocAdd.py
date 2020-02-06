@@ -51,9 +51,12 @@ class DocAdd(object):
         self.docTitleFrame = LabelFrame(self.docInfoFrame, text='Titre du document et revision', labelanchor='nw', bd=5,
                                         bg='alice blue', borderwidth=2, width=int(self.scaleFactor*430), height=int(self.scaleFactor*50), highlightthickness=0,
                                         highlightbackground='alice blue', font='arial 9 italic', foreground='navy')
-
-        self.docTitleFrame.pack_propagate(False)
         self.docTitleFrame.pack(padx=2, pady=2)
+
+        # BOUTON DE SELECTION DE DOCUMENT
+        selecButton = Button(self.docTitleFrame, text='Selectionner un document', command=self.selecDoc, state=NORMAL, width=int(self.scaleFactor*30),
+                             font='arial 9', foreground='black', bg='grey60')
+        selecButton.pack(side=TOP, padx=2, pady=5)
 
         # TITRE
         value = StringVar()
@@ -65,7 +68,7 @@ class DocAdd(object):
 
         # REV
         value = StringVar()
-        self.docRevEntry = Entry(self.docTitleFrame, textvariable=value, font='arial 8',
+        self.docRevEntry = Entry(self.docTitleFrame, textvariable=value, font='arial 8 bold',
                                  highlightthickness=0, width=int(self.scaleFactor*10))
         self.docRevEntry.var = value
         self.docRevEntry.insert(0, 'rev')
@@ -141,6 +144,7 @@ class DocAdd(object):
         self.frameTitle[3].grid(row=1, column=1, padx=5, pady=5)
 
     def addFile(self):
+        self.docAddWindow.wm_attributes('-topmost', 0)
         print('DocAdd.addFile')
 
         # Acquisition titre et rev et lien
@@ -216,3 +220,18 @@ class DocAdd(object):
     def destroyWindow(self):
         for window in self.windowList:
             window.destroy()
+
+    def selecDoc(self):
+
+        self.docAddWindow.wm_attributes('-topmost', 0)
+
+        fileToAdd = filedialog.askopenfilename()
+        fileToAdd_title = os.path.basename(fileToAdd).split('.')[0]
+        fileToAdd_dir = os.path.dirname(fileToAdd)
+
+        self.docTitleEntry.delete(0, END)
+        self.docTitleEntry.insert(0, fileToAdd_title)
+        self.docLinkEntry.delete(0, END)
+        self.docLinkEntry.insert(0, fileToAdd_dir)
+
+        self.docAddWindow.wm_attributes('-topmost', 1)

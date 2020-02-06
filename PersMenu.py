@@ -34,7 +34,7 @@ class PersMenu(object):
 
         # Creation du collecteur de data
         self.fullData = {}
-        self.catList = ['REDACTION', 'RELECTURE', 'SIGNATURE', 'DIFFUSION']
+        self.catList = ['REDACTION', 'RELECTURE', 'SIGNATURE', 'DIFFUSION', 'RESPONSABILITE']
         for cat in self.catList:
             self.fullData[cat] = []
 
@@ -53,15 +53,27 @@ class PersMenu(object):
             fileToAnalyse = 'DocList\\' + doc
 
             with open(fileToAnalyse, 'r') as readFile:
+                triggerResp = 0
 
                 for line in readFile:
-                    if line.startswith('STATUTENCOURS'):
+                    if line.startswith('REDACTION'):
+                        triggerResp = 1
+                    elif line.startswith('RELECTURE'):
+                        triggerResp = 0
+                    elif triggerResp == 1:
+                        curResp = str(line.split(' ')[0])
+                    elif line.startswith('STATUTENCOURS'):
                         curStatut = int(line.split(' ')[1])
 
                 readFile.close()
 
             with open(fileToAnalyse, 'r') as readFile:
                 triggerCat = 0
+                compteur = {1: [0, 0],
+                            2: [0, 0],
+                            3: [0, 0],
+                            4: [0, 0]}
+
                 for line in readFile:
 
                     if curStatut == 1:
@@ -70,9 +82,13 @@ class PersMenu(object):
                         elif line.startswith('RELECTURE'):
                             triggerCat = 0
                         elif triggerCat == 1:
+                            compteur[1][0] += 1
+
                             if line.startswith(self.persSelec):
                                 if line.split(' ')[1] == 'NOK\n':
                                     self.fullData[self.catList[0]].append(doc)
+                            if line.split(' ')[1] == 'OK\n':
+                                compteur[1][1] += 1
 
                     elif curStatut == 2:
                         if line.startswith('RELECTURE'):
@@ -80,9 +96,13 @@ class PersMenu(object):
                         elif line.startswith('SIGNATURE'):
                             triggerCat = 0
                         elif triggerCat == 1:
+                            compteur[2][0] += 1
+
                             if line.startswith(self.persSelec):
                                 if line.split(' ')[1] == 'NOK\n':
                                     self.fullData[self.catList[1]].append(doc)
+                            if line.split(' ')[1] == 'OK\n':
+                                compteur[2][1] += 1
 
                     elif curStatut == 3:
                         if line.startswith('SIGNATURE'):
@@ -90,9 +110,13 @@ class PersMenu(object):
                         elif line.startswith('DIFFUSION'):
                             triggerCat = 0
                         elif triggerCat == 1:
+                            compteur[3][0] += 1
+
                             if line.startswith(self.persSelec):
                                 if line.split(' ')[1] == 'NOK\n':
                                     self.fullData[self.catList[2]].append(doc)
+                            if line.split(' ')[1] == 'OK\n':
+                                compteur[3][1] += 1
 
                     elif curStatut == 4:
                         if line.startswith('DIFFUSION'):
@@ -100,11 +124,21 @@ class PersMenu(object):
                         elif line.startswith('STATUTENCOURS'):
                             triggerCat = 0
                         elif triggerCat == 1:
+                            compteur[4][0] += 1
+
                             if line.startswith(self.persSelec):
                                 if line.split(' ')[1] == 'NOK\n':
                                     self.fullData[self.catList[3]].append(doc)
+                            if line.split(' ')[1] == 'OK\n':
+                                compteur[4][1] += 1
+
+                if curStatut != 5:  # ELIMINE LE CAS OU LE DOC EST DIFFUSE
+                    if compteur[curStatut][1] == compteur[curStatut][0]:
+                        if curResp == self.persSelec:
+                            self.fullData[self.catList[4]].append(doc)
 
         # Placement et remplissage des fenetres
+
         # ACTIONS ---------------------------------------------------------------------------------------------
         # --------- Creation de la fenetre
         actionFrame = LabelFrame(self.persWindow, text='Action', labelanchor='nw', bd=5, bg='alice blue',
@@ -143,6 +177,7 @@ class PersMenu(object):
         self.frameTitle = []
         self.data = {}
         j=0
+
         for cat in self.catList:
             if cat == 'REDACTION':
                 text = 'a rediger'
@@ -152,30 +187,54 @@ class PersMenu(object):
                 text = 'a signer'
             elif cat == 'DIFFUSION':
                 text = 'a diffuser'
+            elif cat == 'RESPONSABILITE':
+                text = 'pret pour le changement de statut'
 
-            self.frameTitle.append(LabelFrame(self.mainDocPersFrame, foreground='grey20', labelanchor='nw', width=int(self.scaleFactor*500),
-                                              text=text, bd=5, bg='alice blue', font='arial 10 bold', borderwidth=1,
-                                              highlightthickness=0, highlightbackground='alice blue', height=int(self.scaleFactor*200)))
+            if cat != 'RESPONSABILITE':
 
-            self.frameTitle[j].pack(side=TOP, padx=5, pady=5)
+                self.frameTitle.append(LabelFrame(self.mainDocPersFrame, foreground='grey20', labelanchor='nw', width=int(self.scaleFactor*500),
+                                                  text=text, bd=5, bg='alice blue', font='arial 10 bold', borderwidth=1,
+                                                  highlightthickness=0, highlightbackground='alice blue', height=int(self.scaleFactor*200)))
 
-            i = 0
-            self.data[j] = []
-            if not self.fullData[cat]:
-                self.labelForEmptyList = Label(self.frameTitle[j], text='Aucun document ' + text, bg='alice blue',
-                                               font='arial 8 italic', width=int(self.scaleFactor*77), anchor=NW)
-                self.labelForEmptyList.pack(side=TOP, padx=20, pady=0)
+                self.frameTitle[j].pack(side=TOP, padx=5, pady=5)
+
+                i = 0
+                self.data[j] = []
+                if not self.fullData[cat]:
+                    self.labelForEmptyList = Label(self.frameTitle[j], text='Aucun document ' + text, bg='alice blue',
+                                                   font='arial 8 italic', width=int(self.scaleFactor*77), anchor=NW)
+                    self.labelForEmptyList.pack(side=TOP, padx=20, pady=0)
+                else:
+                    for doc in self.fullData[cat]:
+                        checkValue = IntVar()
+                        self.data[j].append(Checkbutton(self.frameTitle[j], text=doc, variable=checkValue, onvalue=1,
+                                                        offvalue=0, bg='alice blue', width=int(self.scaleFactor*63), font='arial 9', anchor=NW))
+
+                        self.data[j][i].var = checkValue
+                        self.data[j][i].pack(side=TOP, padx=20, pady=0)
+
+                        i += 1
+                j += 1
+
             else:
-                for doc in self.fullData[cat]:
-                    checkValue = IntVar()
-                    self.data[j].append(Checkbutton(self.frameTitle[j], text=doc, variable=checkValue, onvalue=1,
-                                                    offvalue=0, bg='alice blue', width=int(self.scaleFactor*63), font='arial 9', anchor=NW))
+                self.frameTitle.append(LabelFrame(self.mainDocPersFrame, foreground='grey20', labelanchor='nw',
+                                                  width=int(self.scaleFactor * 500),
+                                                  text='Document ' + text, bd=5, bg='alice blue', font='arial 10 bold', borderwidth=1,
+                                                  highlightthickness=0, highlightbackground='alice blue',
+                                                  height=int(self.scaleFactor * 200)))
+                self.frameTitle[j].pack(side=TOP, padx=5, pady=5)
 
-                    self.data[j][i].var = checkValue
-                    self.data[j][i].pack(side=TOP, padx=20, pady=0)
+                if not self.fullData[cat]:
+                    self.labelForEmptyList = Label(self.frameTitle[j], text='Aucun document ' + text, bg='alice blue',
+                                                   font='arial 8 italic', width=int(self.scaleFactor*77), anchor=NW)
+                    self.labelForEmptyList.pack(side=TOP, padx=20, pady=0)
+                else:
+                    for doc in self.fullData[cat]:
+                        docLabel = Label(self.frameTitle[j], text=doc, bg='alice blue', width=int(self.scaleFactor*66),
+                                         font='arial 9', anchor=NW)
+                        docLabel.pack(side=TOP, padx=20, pady=0)
 
-                    i += 1
-            j += 1
+
 
     def saveAndQuit(self):
 
@@ -206,7 +265,7 @@ class PersMenu(object):
                 k += 1
             j += 1
 
-        for i in range(0,len(self.mainDic)):
+        for i in range(0, len(self.mainDic)):
             if self.mainDic[i]['done'] == 1:
 
                 trigger0 += 1
