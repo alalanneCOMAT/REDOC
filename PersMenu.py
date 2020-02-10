@@ -256,14 +256,15 @@ class PersMenu(object):
                 state = 4
 
             i = 0
-            for doc in self.fullData[keys]:
-                done = self.data[j][i].var.get()
-                self.mainDic[k] = {'title': doc,
-                                   'state': state,
-                                   'done': done}
-                i += 1
-                k += 1
-            j += 1
+            if keys != 'RESPONSABILITE':
+                for doc in self.fullData[keys]:
+                    done = self.data[j][i].var.get()
+                    self.mainDic[k] = {'title': doc,
+                                       'state': state,
+                                       'done': done}
+                    i += 1
+                    k += 1
+                j += 1
 
         for i in range(0, len(self.mainDic)):
             if self.mainDic[i]['done'] == 1:
